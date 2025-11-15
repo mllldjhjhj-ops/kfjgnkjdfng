@@ -1,0 +1,2180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduConnect Pro - Advanced Learning Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --secondary-color: #34a853;
+            --accent-color: #ea4335;
+            --warning-color: #fbbc05;
+            --background-color: #f8f9fa;
+            --card-color: #ffffff;
+            --text-color: #202124;
+            --light-text: #5f6368;
+            --border-color: #dadce0;
+            --teacher-color: #4285f4;
+            --student-color: #fbbc05;
+            --sidebar-width: 240px;
+            --header-height: 64px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--card-color);
+            border-right: 1px solid var(--border-color);
+            padding: 16px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 24px 16px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 8px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: var(--text-color);
+            text-decoration: none;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-item.active {
+            background-color: rgba(66, 133, 244, 0.1);
+            border-right: 3px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .nav-icon {
+            margin-right: 16px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-text);
+        }
+
+        .nav-item.active .nav-icon {
+            color: var(--primary-color);
+        }
+
+        .nav-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .badge {
+            position: absolute;
+            right: 16px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 10px;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 24px;
+            transition: margin-left 0.3s ease;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--card-color);
+            border-radius: 24px;
+            padding: 8px 16px;
+            width: 500px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .search-input {
+            border: none;
+            outline: none;
+            flex: 1;
+            padding: 8px;
+            font-size: 16px;
+            background: transparent;
+        }
+
+        .search-icon {
+            color: var(--light-text);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Feed Styles */
+        .feed {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .thought-card {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .thought-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .thought-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--teacher-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-subject {
+            font-size: 12px;
+            color: var(--light-text);
+        }
+
+        .thought-time {
+            font-size: 12px;
+            color: var(--light-text);
+        }
+
+        .thought-content {
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .thought-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .tag {
+            background-color: rgba(66, 133, 244, 0.1);
+            color: var(--primary-color);
+            padding: 4px 8px;
+            border-radius: 16px;
+            font-size: 12px;
+        }
+
+        .thought-actions {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--border-color);
+            padding-top: 12px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            background: none;
+            border: none;
+            color: var(--light-text);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+            font-size: 14px;
+        }
+
+        .action-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .action-btn.active {
+            color: var(--primary-color);
+        }
+
+        .action-icon {
+            margin-right: 6px;
+            font-size: 16px;
+        }
+
+        /* Live Section */
+        .live-section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title i {
+            margin-right: 8px;
+            color: var(--accent-color);
+        }
+
+        .view-all {
+            font-size: 14px;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .live-cards {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .live-card {
+            min-width: 280px;
+            background-color: var(--card-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .live-badge {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .live-badge i {
+            margin-right: 4px;
+            font-size: 10px;
+        }
+
+        .live-preview {
+            height: 160px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+        }
+
+        .live-info {
+            padding: 12px;
+        }
+
+        .live-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .live-teacher {
+            font-size: 14px;
+            color: var(--light-text);
+        }
+
+        .live-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--light-text);
+        }
+
+        /* Three.js Animation Container */
+        #animation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.05;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            width: 400px;
+            max-width: 90%;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: white;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: #3367d6;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #2d9249;
+        }
+
+        .login-options {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .login-option {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .login-option:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .login-option.active {
+            border-color: var(--primary-color);
+            background-color: rgba(66, 133, 244, 0.1);
+        }
+
+        /* AI Assistant */
+        .ai-assistant {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 99;
+            transition: transform 0.3s;
+        }
+
+        .ai-assistant:hover {
+            transform: scale(1.1);
+        }
+
+        /* New Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .feature-card {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .feature-description {
+            color: var(--light-text);
+            font-size: 14px;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            margin-bottom: 32px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .progress-title {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .progress-item {
+            text-align: center;
+            padding: 16px;
+            background-color: var(--background-color);
+            border-radius: 8px;
+        }
+
+        .progress-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+        }
+
+        .progress-label {
+            font-size: 14px;
+            color: var(--light-text);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .feed {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-bar {
+                width: 400px;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .search-bar {
+                width: 300px;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .progress-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 16px;
+            }
+            
+            .search-bar {
+                width: 100%;
+            }
+            
+            .header-actions {
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Menu Toggle Button */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-color);
+            margin-right: 16px;
+        }
+
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-color);
+            margin-right: 16px;
+        }
+
+        /* Updated UI Elements */
+        .trending-topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .topic-chip {
+            background-color: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .topic-chip:hover {
+            background-color: rgba(66, 133, 244, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .topic-chip.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Updated Course Cards */
+        .course-card {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s;
+        }
+
+        .course-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .course-image {
+            height: 160px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .course-level {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .course-info {
+            padding: 16px;
+        }
+
+        .course-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .course-teacher {
+            font-size: 14px;
+            color: var(--light-text);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .course-teacher i {
+            margin-right: 6px;
+        }
+
+        .course-description {
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: var(--light-text);
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: var(--light-text);
+        }
+
+        .course-price {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .course-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Updated Profile Elements */
+        .profile-header {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+            margin-right: 24px;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .profile-subject {
+            font-size: 16px;
+            color: var(--light-text);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-subject i {
+            margin-right: 6px;
+        }
+
+        .profile-bio {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+            color: var(--light-text);
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 24px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--light-text);
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Learning Path */
+        .learning-path {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            margin-bottom: 32px;
+        }
+
+        .path-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .path-title {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .path-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .path-step {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background-color: var(--background-color);
+            border-radius: 8px;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 12px;
+        }
+
+        .step-info {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .step-description {
+            font-size: 14px;
+            color: var(--light-text);
+        }
+
+        .step-status {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .step-status.pending {
+            background-color: var(--warning-color);
+        }
+
+        /* Community Section */
+        .community-section {
+            margin-bottom: 32px;
+        }
+
+        .community-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .community-card {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .community-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin: 0 auto 12px;
+            font-size: 20px;
+        }
+
+        .community-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .community-subject {
+            font-size: 14px;
+            color: var(--light-text);
+            margin-bottom: 8px;
+        }
+
+        .community-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--light-text);
+        }
+    </style>
+</head>
+<body>
+    <div id="animation-container"></div>
+    
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="logo">
+                <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+                <div class="logo-text">EduConnect Pro</div>
+            </div>
+            <a href="#" class="nav-item active" data-page="home">
+                <div class="nav-icon"><i class="fas fa-home"></i></div>
+                <div class="nav-text">Home</div>
+            </a>
+            <a href="#" class="nav-item" data-page="search">
+                <div class="nav-icon"><i class="fas fa-search"></i></div>
+                <div class="nav-text">Search</div>
+            </a>
+            <a href="#" class="nav-item" data-page="courses">
+                <div class="nav-icon"><i class="fas fa-book-open"></i></div>
+                <div class="nav-text">Courses</div>
+                <span class="badge">New</span>
+            </a>
+            <a href="#" class="nav-item" data-page="live">
+                <div class="nav-icon"><i class="fas fa-broadcast-tower"></i></div>
+                <div class="nav-text">Live Classes</div>
+            </a>
+            <a href="#" class="nav-item" data-page="community">
+                <div class="nav-icon"><i class="fas fa-users"></i></div>
+                <div class="nav-text">Community</div>
+                <span class="badge">New</span>
+            </a>
+            <a href="#" class="nav-item" data-page="learning-path">
+                <div class="nav-icon"><i class="fas fa-road"></i></div>
+                <div class="nav-text">Learning Path</div>
+            </a>
+            <a href="#" class="nav-item" data-page="saved">
+                <div class="nav-icon"><i class="fas fa-bookmark"></i></div>
+                <div class="nav-text">Saved</div>
+            </a>
+            <a href="profile.html">
+                <div class="nav-icon"><i class="fas fa-user"></i></div>
+                <div class="nav-text">Profile</div>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="page-title">Home</div>
+                <div class="header-actions">
+                    <div class="search-bar">
+                        <input type="text" class="search-input" placeholder="Search teachers, courses, thoughts...">
+                        <div class="search-icon"><i class="fas fa-search"></i></div>
+                    </div>
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="user-avatar" id="user-avatar">
+                        RS
+                        <div class="notification-badge">3</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Features Section -->
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="feature-title">AI Learning Assistant</div>
+                    <div class="feature-description">Get personalized learning recommendations and instant answers to your questions</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-vr-cardboard"></i>
+                    </div>
+                    <div class="feature-title">Virtual Labs</div>
+                    <div class="feature-description">Experience hands-on learning with our immersive virtual laboratory environment</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="feature-title">Progress Analytics</div>
+                    <div class="feature-description">Track your learning journey with detailed analytics and performance insights</div>
+                </div>
+            </div>
+
+            <!-- Progress Section -->
+            <div class="progress-section">
+                <div class="progress-header">
+                    <div class="progress-title">Your Learning Progress</div>
+                    <div class="view-all">View Details</div>
+                </div>
+                <div class="progress-stats">
+                    <div class="progress-item">
+                        <div class="progress-value">78%</div>
+                        <div class="progress-label">Course Completion</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-value">24</div>
+                        <div class="progress-label">Skills Learned</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-value">15</div>
+                        <div class="progress-label">Certificates Earned</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trending Topics -->
+            <div class="trending-topics">
+                <div class="topic-chip active">All Topics</div>
+                <div class="topic-chip">Mathematics</div>
+                <div class="topic-chip">Physics</div>
+                <div class="topic-chip">Programming</div>
+                <div class="topic-chip">Chemistry</div>
+                <div class="topic-chip">Biology</div>
+                <div class="topic-chip">English</div>
+            </div>
+
+            <!-- Live Section -->
+            <div class="live-section">
+                <div class="section-title">
+                    <span><i class="fas fa-broadcast-tower"></i> Live Now</span>
+                    <span class="view-all">View All</span>
+                </div>
+                <div class="live-cards">
+                    <div class="live-card">
+                        <div class="live-preview">
+                            <div class="live-badge">
+                                <i class="fas fa-circle"></i>
+                                LIVE
+                            </div>
+                            <div>Mathematics Whiteboard Session</div>
+                        </div>
+                        <div class="live-info">
+                            <div class="live-title">Advanced Calculus Concepts</div>
+                            <div class="live-teacher">Dr. Sharma • Mathematics</div>
+                            <div class="live-stats">
+                                <span><i class="fas fa-eye"></i> 245 viewers</span>
+                                <span><i class="fas fa-comment"></i> 42 comments</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="live-card">
+                        <div class="live-preview">
+                            <div class="live-badge">
+                                <i class="fas fa-circle"></i>
+                                LIVE
+                            </div>
+                            <div>Physics Problem Solving</div>
+                        </div>
+                        <div class="live-info">
+                            <div class="live-title">Quantum Mechanics Basics</div>
+                            <div class="live-teacher">Prof. Gupta • Physics</div>
+                            <div class="live-stats">
+                                <span><i class="fas fa-eye"></i> 189 viewers</span>
+                                <span><i class="fas fa-comment"></i> 28 comments</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="live-card">
+                        <div class="live-preview">
+                            <div class="live-badge">
+                                <i class="fas fa-circle"></i>
+                                LIVE
+                            </div>
+                            <div>English Grammar Session</div>
+                        </div>
+                        <div class="live-info">
+                            <div class="live-title">Advanced English Writing</div>
+                            <div class="live-teacher">Ms. Johnson • English</div>
+                            <div class="live-stats">
+                                <span><i class="fas fa-eye"></i> 156 viewers</span>
+                                <span><i class="fas fa-comment"></i> 19 comments</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thought Feed -->
+            <div class="feed" id="thought-feed">
+                <!-- Thought cards will be dynamically generated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Assistant -->
+    <div class="ai-assistant" id="aiAssistant">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <div class="modal-title">Welcome to EduConnect Pro</div>
+            <div class="login-options">
+                <div class="login-option active" data-type="student">
+                    <i class="fas fa-user-graduate"></i>
+                    Student
+                </div>
+                <div class="login-option" data-type="teacher">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    Teacher
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" placeholder="Enter your password">
+            </div>
+            <div class="form-group teacher-subject" style="display: none;">
+                <label class="form-label">Subject (Optional)</label>
+                <select class="form-select">
+                    <option value="">Select your subject</option>
+                    <option value="maths">Mathematics</option>
+                    <option value="physics">Physics</option>
+                    <option value="chemistry">Chemistry</option>
+                    <option value="biology">Biology</option>
+                    <option value="english">English</option>
+                    <option value="coding">Coding</option>
+                    <option value="iit">IIT Preparation</option>
+                    <option value="neet">NEET Preparation</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" id="login-btn">
+                <i class="fas fa-sign-in-alt"></i>
+                Login
+            </button>
+            <div style="text-align: center; margin-top: 16px;">
+                <span>Don't have an account? </span>
+                <a href="#" id="signup-link" style="color: var(--primary-color);">Sign up</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal" id="signup-modal">
+        <div class="modal-content">
+            <div class="modal-title">Create Account</div>
+            <div class="login-options">
+                <div class="login-option active" data-type="student">
+                    <i class="fas fa-user-graduate"></i>
+                    Student
+                </div>
+                <div class="login-option" data-type="teacher">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    Teacher
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-input" placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" placeholder="Create a password">
+            </div>
+            <div class="form-group teacher-subject" style="display: none;">
+                <label class="form-label">Subject (Optional)</label>
+                <select class="form-select">
+                    <option value="">Select your subject</option>
+                    <option value="maths">Mathematics</option>
+                    <option value="physics">Physics</option>
+                    <option value="chemistry">Chemistry</option>
+                    <option value="biology">Biology</option>
+                    <option value="english">English</option>
+                    <option value="coding">Coding</option>
+                    <option value="iit">IIT Preparation</option>
+                    <option value="neet">NEET Preparation</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" id="signup-btn">
+                <i class="fas fa-user-plus"></i>
+                Sign Up
+            </button>
+            <div style="text-align: center; margin-top: 16px;">
+                <span>Already have an account? </span>
+                <a href="#" id="login-link" style="color: var(--primary-color);">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for the application
+        const sampleThoughts = [
+            {
+                id: 1,
+                user: "Dr. Sharma",
+                subject: "Mathematics",
+                content: "Remember, calculus is not just about formulas. It's about understanding change and motion in the universe. The derivative represents instantaneous rate of change - think of it as capturing a moment in time.",
+                time: "2 hours ago",
+                likes: 24,
+                comments: 8,
+                shares: 3,
+                avatar: "DS",
+                tags: ["Calculus", "Mathematics", "Learning"],
+                liked: true,
+                saved: false
+            },
+            {
+                id: 2,
+                user: "Prof. Gupta",
+                subject: "Physics",
+                content: "Newton's laws seem simple, but their implications are profound. The third law - for every action, there's an equal and opposite reaction - explains everything from rocket propulsion to walking.",
+                time: "4 hours ago",
+                likes: 42,
+                comments: 12,
+                shares: 5,
+                avatar: "PG",
+                tags: ["Physics", "Newton", "Fundamentals"],
+                liked: false,
+                saved: true
+            },
+            {
+                id: 3,
+                user: "Ms. Johnson",
+                subject: "English",
+                content: "A powerful writing technique: Show, don't tell. Instead of saying 'she was sad', describe her actions: 'She stared out the window as raindrops traced paths down the glass.'",
+                time: "6 hours ago",
+                likes: 18,
+                comments: 5,
+                shares: 2,
+                avatar: "MJ",
+                tags: ["Writing", "English", "Technique"],
+                liked: false,
+                saved: false
+            },
+            {
+                id: 4,
+                user: "Dr. Patel",
+                subject: "Chemistry",
+                content: "Chemical bonds are like relationships - some are strong and stable (covalent), some involve give and take (ionic), and some are weak but important (hydrogen bonds). Understanding this helps predict molecular behavior.",
+                time: "1 day ago",
+                likes: 31,
+                comments: 7,
+                shares: 4,
+                avatar: "DP",
+                tags: ["Chemistry", "Bonds", "Molecular"],
+                liked: true,
+                saved: true
+            }
+        ];
+
+        const sampleCourses = [
+            {
+                id: 1,
+                title: "Advanced Calculus for IIT-JEE",
+                teacher: "Dr. Sharma",
+                subject: "Mathematics",
+                description: "Master differential equations, integrals, and advanced calculus concepts with problem-solving techniques for competitive exams.",
+                price: "₹1,999",
+                isPaid: true,
+                level: "Advanced",
+                rating: 4.9,
+                students: 1245,
+                duration: "42 hours"
+            },
+            {
+                id: 2,
+                title: "Quantum Mechanics Fundamentals",
+                teacher: "Prof. Gupta",
+                subject: "Physics",
+                description: "Understand the principles of quantum mechanics from wave-particle duality to Schrödinger's equation.",
+                price: "Free",
+                isPaid: false,
+                level: "Intermediate",
+                rating: 4.7,
+                students: 892,
+                duration: "28 hours"
+            },
+            {
+                id: 3,
+                title: "Creative Writing Masterclass",
+                teacher: "Ms. Johnson",
+                subject: "English",
+                description: "Develop your writing skills with techniques for storytelling, character development, and engaging narratives.",
+                price: "₹899",
+                isPaid: true,
+                level: "Beginner",
+                rating: 4.8,
+                students: 567,
+                duration: "35 hours"
+            },
+            {
+                id: 4,
+                title: "Organic Chemistry Reactions",
+                teacher: "Dr. Patel",
+                subject: "Chemistry",
+                description: "Comprehensive guide to organic chemistry reactions, mechanisms, and synthesis strategies.",
+                price: "₹1,499",
+                isPaid: true,
+                level: "Advanced",
+                rating: 4.9,
+                students: 734,
+                duration: "38 hours"
+            }
+        ];
+
+        const sampleTeachers = [
+            { name: "Dr. Sharma", subject: "Mathematics", avatar: "DS", followers: "12.4K", courses: 24 },
+            { name: "Prof. Gupta", subject: "Physics", avatar: "PG", followers: "8.7K", courses: 18 },
+            { name: "Ms. Johnson", subject: "English", avatar: "MJ", followers: "6.2K", courses: 15 },
+            { name: "Dr. Patel", subject: "Chemistry", avatar: "DP", followers: "9.1K", courses: 21 },
+            { name: "Dr. Kumar", subject: "Biology", avatar: "DK", followers: "7.5K", courses: 16 },
+            { name: "Mr. Verma", subject: "Coding", avatar: "MV", followers: "14.2K", courses: 28 }
+        ];
+
+        // Three.js Animation
+        function initThreeJS() {
+            const container = document.getElementById('animation-container');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+            
+            // Create floating geometric shapes
+            const geometry = new THREE.IcosahedronGeometry(1, 0);
+            const material = new THREE.MeshBasicMaterial({ 
+                color: 0x4285f4, 
+                wireframe: true,
+                transparent: true,
+                opacity: 0.3
+            });
+            
+            const shapes = [];
+            const count = 15;
+            
+            for (let i = 0; i < count; i++) {
+                const shape = new THREE.Mesh(geometry, material.clone());
+                shape.position.x = Math.random() * 40 - 20;
+                shape.position.y = Math.random() * 40 - 20;
+                shape.position.z = Math.random() * 40 - 20;
+                shape.rotation.x = Math.random() * Math.PI;
+                shape.rotation.y = Math.random() * Math.PI;
+                
+                shape.userData = {
+                    speedX: (Math.random() - 0.5) * 0.02,
+                    speedY: (Math.random() - 0.5) * 0.02,
+                    speedZ: (Math.random() - 0.5) * 0.02,
+                    rotationSpeedX: (Math.random() - 0.5) * 0.01,
+                    rotationSpeedY: (Math.random() - 0.5) * 0.01
+                };
+                
+                shapes.push(shape);
+                scene.add(shape);
+            }
+            
+            camera.position.z = 30;
+            
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                shapes.forEach(shape => {
+                    shape.position.x += shape.userData.speedX;
+                    shape.position.y += shape.userData.speedY;
+                    shape.position.z += shape.userData.speedZ;
+                    
+                    shape.rotation.x += shape.userData.rotationSpeedX;
+                    shape.rotation.y += shape.userData.rotationSpeedY;
+                    
+                    // Boundary check
+                    if (shape.position.x > 25 || shape.position.x < -25) shape.userData.speedX *= -1;
+                    if (shape.position.y > 25 || shape.position.y < -25) shape.userData.speedY *= -1;
+                    if (shape.position.z > 25 || shape.position.z < -25) shape.userData.speedZ *= -1;
+                });
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Three.js animation
+            initThreeJS();
+            
+            // Show login modal by default
+            document.getElementById('login-modal').style.display = 'flex';
+            
+            // Populate thought feed
+            renderThoughtFeed();
+            
+            // Set up event listeners
+            setupEventListeners();
+        });
+
+        // Render thought feed
+        function renderThoughtFeed() {
+            const feedContainer = document.getElementById('thought-feed');
+            feedContainer.innerHTML = '';
+            
+            sampleThoughts.forEach(thought => {
+                const thoughtCard = document.createElement('div');
+                thoughtCard.className = 'thought-card';
+                thoughtCard.innerHTML = `
+                    <div class="thought-header">
+                        <div class="avatar" style="background: linear-gradient(135deg, ${getSubjectColor(thought.subject)}, ${getSubjectSecondaryColor(thought.subject)})">${thought.avatar}</div>
+                        <div class="user-info">
+                            <div class="user-name">${thought.user}</div>
+                            <div class="user-subject">${thought.subject}</div>
+                        </div>
+                        <div class="thought-time">${thought.time}</div>
+                    </div>
+                    <div class="thought-content">
+                        ${thought.content}
+                    </div>
+                    <div class="thought-tags">
+                        ${thought.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="thought-actions">
+                        <button class="action-btn ${thought.liked ? 'active' : ''}" data-id="${thought.id}" data-action="like">
+                            <span class="action-icon"><i class="fas fa-thumbs-up"></i></span>
+                            <span>${thought.likes}</span>
+                        </button>
+                        <button class="action-btn" data-id="${thought.id}" data-action="comment">
+                            <span class="action-icon"><i class="fas fa-comment"></i></span>
+                            <span>${thought.comments}</span>
+                        </button>
+                        <button class="action-btn" data-id="${thought.id}" data-action="share">
+                            <span class="action-icon"><i class="fas fa-share"></i></span>
+                            <span>${thought.shares}</span>
+                        </button>
+                        <button class="action-btn ${thought.saved ? 'active' : ''}" data-id="${thought.id}" data-action="save">
+                            <span class="action-icon"><i class="fas fa-bookmark"></i></span>
+                            <span>Save</span>
+                        </button>
+                    </div>
+                `;
+                feedContainer.appendChild(thoughtCard);
+            });
+        }
+
+        // Get color based on subject
+        function getSubjectColor(subject) {
+            const colors = {
+                'Mathematics': '#4285f4',
+                'Physics': '#ea4335',
+                'Chemistry': '#34a853',
+                'Biology': '#fbbc05',
+                'English': '#8e44ad',
+                'Coding': '#e67e22'
+            };
+            
+            return colors[subject] || '#7f8c8d';
+        }
+
+        // Get secondary color based on subject
+        function getSubjectSecondaryColor(subject) {
+            const colors = {
+                'Mathematics': '#5e97f6',
+                'Physics': '#ec5840',
+                'Chemistry': '#4caf50',
+                'Biology': '#fdd835',
+                'English': '#9b59b6',
+                'Coding': '#e67e22'
+            };
+            
+            return colors[subject] || '#95a5a6';
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const page = this.getAttribute('data-page');
+                    navigateToPage(page);
+                });
+            });
+            
+            // Menu toggle for mobile
+            document.getElementById('menuToggle').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+            
+            // Theme toggle
+            document.getElementById('themeToggle').addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                const icon = this.querySelector('i');
+                if (document.body.classList.contains('dark-mode')) {
+                    icon.className = 'fas fa-sun';
+                    // In a real app, you would update CSS variables for dark mode
+                } else {
+                    icon.className = 'fas fa-moon';
+                }
+            });
+            
+            // AI Assistant
+            document.getElementById('aiAssistant').addEventListener('click', function() {
+                alert('AI Assistant activated! How can I help you with your learning today?');
+            });
+            
+            // Thought actions
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.action-btn')) {
+                    const button = e.target.closest('.action-btn');
+                    const thoughtId = button.getAttribute('data-id');
+                    const action = button.getAttribute('data-action');
+                    
+                    handleThoughtAction(thoughtId, action, button);
+                }
+            });
+            
+            // Topic chips
+            document.querySelectorAll('.topic-chip').forEach(chip => {
+                chip.addEventListener('click', function() {
+                    document.querySelectorAll('.topic-chip').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // In a real app, this would filter content
+                    const topic = this.textContent;
+                    if (topic === 'All Topics') {
+                        renderThoughtFeed();
+                    } else {
+                        // Filter thoughts by topic
+                        const filteredThoughts = sampleThoughts.filter(thought => 
+                            thought.tags.some(tag => tag.toLowerCase().includes(topic.toLowerCase())) ||
+                            thought.subject.toLowerCase() === topic.toLowerCase()
+                        );
+                        renderFilteredThoughts(filteredThoughts);
+                    }
+                });
+            });
+            
+            // Login/Signup modal toggles
+            document.getElementById('signup-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('login-modal').style.display = 'none';
+                document.getElementById('signup-modal').style.display = 'flex';
+            });
+            
+            document.getElementById('login-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('signup-modal').style.display = 'none';
+                document.getElementById('login-modal').style.display = 'flex';
+            });
+            
+            // User type selection
+            document.querySelectorAll('.login-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const type = this.getAttribute('data-type');
+                    
+                    document.querySelectorAll('.login-option').forEach(o => o.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show/hide subject selection for teachers
+                    document.querySelectorAll('.teacher-subject').forEach(el => {
+                        el.style.display = type === 'teacher' ? 'block' : 'none';
+                    });
+                });
+            });
+            
+            // Login button
+            document.getElementById('login-btn').addEventListener('click', function() {
+                // In a real app, this would validate credentials
+                document.getElementById('login-modal').style.display = 'none';
+                document.getElementById('user-avatar').textContent = 'RS';
+            });
+            
+            // Signup button
+            document.getElementById('signup-btn').addEventListener('click', function() {
+                // In a real app, this would create an account
+                document.getElementById('signup-modal').style.display = 'none';
+                document.getElementById('user-avatar').textContent = 'RS';
+            });
+            
+            // Search functionality
+            document.querySelector('.search-input').addEventListener('input', function(e) {
+                const query = e.target.value.toLowerCase();
+                
+                if (query.length > 2) {
+                    navigateToPage('search');
+                    renderSearchResults(query);
+                }
+            });
+        }
+
+        // Handle thought actions (like, comment, share, save)
+        function handleThoughtAction(thoughtId, action, button) {
+            const thought = sampleThoughts.find(t => t.id == thoughtId);
+            
+            switch(action) {
+                case 'like':
+                    if (thought.liked) {
+                        thought.likes--;
+                        thought.liked = false;
+                        button.classList.remove('active');
+                    } else {
+                        thought.likes++;
+                        thought.liked = true;
+                        button.classList.add('active');
+                    }
+                    button.querySelector('span:last-child').textContent = thought.likes;
+                    break;
+                    
+                case 'save':
+                    if (thought.saved) {
+                        thought.saved = false;
+                        button.classList.remove('active');
+                    } else {
+                        thought.saved = true;
+                        button.classList.add('active');
+                    }
+                    break;
+                    
+                case 'comment':
+                    // In a real app, this would open a comment modal
+                    alert(`Commenting on thought by ${thought.user}`);
+                    break;
+                    
+                case 'share':
+                    // In a real app, this would open a share dialog
+                    alert(`Sharing thought by ${thought.user}`);
+                    break;
+            }
+        }
+
+        // Render filtered thoughts
+        function renderFilteredThoughts(thoughts) {
+            const feedContainer = document.getElementById('thought-feed');
+            feedContainer.innerHTML = '';
+            
+            if (thoughts.length === 0) {
+                feedContainer.innerHTML = '<div class="no-results">No thoughts found for this topic</div>';
+                return;
+            }
+            
+            thoughts.forEach(thought => {
+                const thoughtCard = document.createElement('div');
+                thoughtCard.className = 'thought-card';
+                thoughtCard.innerHTML = `
+                    <div class="thought-header">
+                        <div class="avatar" style="background: linear-gradient(135deg, ${getSubjectColor(thought.subject)}, ${getSubjectSecondaryColor(thought.subject)})">${thought.avatar}</div>
+                        <div class="user-info">
+                            <div class="user-name">${thought.user}</div>
+                            <div class="user-subject">${thought.subject}</div>
+                        </div>
+                        <div class="thought-time">${thought.time}</div>
+                    </div>
+                    <div class="thought-content">
+                        ${thought.content}
+                    </div>
+                    <div class="thought-tags">
+                        ${thought.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="thought-actions">
+                        <button class="action-btn ${thought.liked ? 'active' : ''}" data-id="${thought.id}" data-action="like">
+                            <span class="action-icon"><i class="fas fa-thumbs-up"></i></span>
+                            <span>${thought.likes}</span>
+                        </button>
+                        <button class="action-btn" data-id="${thought.id}" data-action="comment">
+                            <span class="action-icon"><i class="fas fa-comment"></i></span>
+                            <span>${thought.comments}</span>
+                        </button>
+                        <button class="action-btn" data-id="${thought.id}" data-action="share">
+                            <span class="action-icon"><i class="fas fa-share"></i></span>
+                            <span>${thought.shares}</span>
+                        </button>
+                        <button class="action-btn ${thought.saved ? 'active' : ''}" data-id="${thought.id}" data-action="save">
+                            <span class="action-icon"><i class="fas fa-bookmark"></i></span>
+                            <span>Save</span>
+                        </button>
+                    </div>
+                `;
+                feedContainer.appendChild(thoughtCard);
+            });
+        }
+
+        // Navigate to different pages
+        function navigateToPage(page) {
+            const mainContent = document.querySelector('.main-content');
+            const pageTitle = document.querySelector('.page-title');
+            
+            switch(page) {
+                case 'home':
+                    pageTitle.textContent = 'Home';
+                    mainContent.innerHTML = `
+                        <div class="page-header">
+                            <div class="page-title">Home</div>
+                            <div class="header-actions">
+                                <div class="search-bar">
+                                    <input type="text" class="search-input" placeholder="Search teachers, courses, thoughts...">
+                                    <div class="search-icon"><i class="fas fa-search"></i></div>
+                                </div>
+                                <button class="theme-toggle" id="themeToggle">
+                                    <i class="fas fa-moon"></i>
+                                </button>
+                                <button class="menu-toggle" id="menuToggle">
+                                    <i class="fas fa-bars"></i>
+                                </button>
+                                <div class="user-avatar" id="user-avatar">
+                                    RS
+                                    <div class="notification-badge">3</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- New Features Section -->
+                        <div class="features-grid">
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="feature-title">AI Learning Assistant</div>
+                                <div class="feature-description">Get personalized learning recommendations and instant answers to your questions</div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-vr-cardboard"></i>
+                                </div>
+                                <div class="feature-title">Virtual Labs</div>
+                                <div class="feature-description">Experience hands-on learning with our immersive virtual laboratory environment</div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="feature-title">Progress Analytics</div>
+                                <div class="feature-description">Track your learning journey with detailed analytics and performance insights</div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Section -->
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <div class="progress-title">Your Learning Progress</div>
+                                <div class="view-all">View Details</div>
+                            </div>
+                            <div class="progress-stats">
+                                <div class="progress-item">
+                                    <div class="progress-value">78%</div>
+                                    <div class="progress-label">Course Completion</div>
+                                </div>
+                                <div class="progress-item">
+                                    <div class="progress-value">24</div>
+                                    <div class="progress-label">Skills Learned</div>
+                                </div>
+                                <div class="progress-item">
+                                    <div class="progress-value">15</div>
+                                    <div class="progress-label">Certificates Earned</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Trending Topics -->
+                        <div class="trending-topics">
+                            <div class="topic-chip active">All Topics</div>
+                            <div class="topic-chip">Mathematics</div>
+                            <div class="topic-chip">Physics</div>
+                            <div class="topic-chip">Programming</div>
+                            <div class="topic-chip">Chemistry</div>
+                            <div class="topic-chip">Biology</div>
+                            <div class="topic-chip">English</div>
+                        </div>
+
+                        <!-- Live Section -->
+                        <div class="live-section">
+                            <div class="section-title">
+                                <span><i class="fas fa-broadcast-tower"></i> Live Now</span>
+                                <span class="view-all">View All</span>
+                            </div>
+                            <div class="live-cards">
+                                <div class="live-card">
+                                    <div class="live-preview">
+                                        <div class="live-badge">
+                                            <i class="fas fa-circle"></i>
+                                            LIVE
+                                        </div>
+                                        <div>Mathematics Whiteboard Session</div>
+                                    </div>
+                                    <div class="live-info">
+                                        <div class="live-title">Advanced Calculus Concepts</div>
+                                        <div class="live-teacher">Dr. Sharma • Mathematics</div>
+                                        <div class="live-stats">
+                                            <span><i class="fas fa-eye"></i> 245 viewers</span>
+                                            <span><i class="fas fa-comment"></i> 42 comments</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="live-card">
+                                    <div class="live-preview">
+                                        <div class="live-badge">
+                                            <i class="fas fa-circle"></i>
+                                            LIVE
+                                        </div>
+                                        <div>Physics Problem Solving</div>
+                                    </div>
+                                    <div class="live-info">
+                                        <div class="live-title">Quantum Mechanics Basics</div>
+                                        <div class="live-teacher">Prof. Gupta • Physics</div>
+                                        <div class="live-stats">
+                                            <span><i class="fas fa-eye"></i> 189 viewers</span>
+                                            <span><i class="fas fa-comment"></i> 28 comments</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="live-card">
+                                    <div class="live-preview">
+                                        <div class="live-badge">
+                                            <i class="fas fa-circle"></i>
+                                            LIVE
+                                        </div>
+                                        <div>English Grammar Session</div>
+                                    </div>
+                                    <div class="live-info">
+                                        <div class="live-title">Advanced English Writing</div>
+                                        <div class="live-teacher">Ms. Johnson • English</div>
+                                        <div class="live-stats">
+                                            <span><i class="fas fa-eye"></i> 156 viewers</span>
+                                            <span><i class="fas fa-comment"></i> 19 comments</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Thought Feed -->
+                        <div class="feed" id="thought-feed"></div>
+                    `;
+                    renderThoughtFeed();
+                    setupEventListeners();
+                    break;
+                    
+                case 'community':
+                    pageTitle.textContent = 'Community';
+                    mainContent.innerHTML = `
+                        <div class="page-header">
+                            <div class="page-title">Community</div>
+                            <div class="header-actions">
+                                <div class="search-bar">
+                                    <input type="text" class="search-input" placeholder="Search community members...">
+                                    <div class="search-icon"><i class="fas fa-search"></i></div>
+                                </div>
+                                <button class="theme-toggle" id="themeToggle">
+                                    <i class="fas fa-moon"></i>
+                                </button>
+                                <button class="menu-toggle" id="menuToggle">
+                                    <i class="fas fa-bars"></i>
+                                </button>
+                                <div class="user-avatar" id="user-avatar">
+                                    RS
+                                    <div class="notification-badge">3</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="community-section">
+                            <div class="section-title">
+                                <span><i class="fas fa-users"></i> Top Educators</span>
+                                <span class="view-all">View All</span>
+                            </div>
+                            <div class="community-cards" id="community-cards"></div>
+                        </div>
+                    `;
+                    renderCommunityCards();
+                    setupEventListeners();
+                    break;
+                    
+                case 'learning-path':
+                    pageTitle.textContent = 'Learning Path';
+                    mainContent.innerHTML = `
+                        <div class="page-header">
+                            <div class="page-title">Learning Path</div>
+                            <div class="header-actions">
+                                <div class="search-bar">
+                                    <input type="text" class="search-input" placeholder="Search learning paths...">
+                                    <div class="search-icon"><i class="fas fa-search"></i></div>
+                                </div>
+                                <button class="theme-toggle" id="themeToggle">
+                                    <i class="fas fa-moon"></i>
+                                </button>
+                                <button class="menu-toggle" id="menuToggle">
+                                    <i class="fas fa-bars"></i>
+                                </button>
+                                <div class="user-avatar" id="user-avatar">
+                                    RS
+                                    <div class="notification-badge">3</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="learning-path">
+                            <div class="path-header">
+                                <div class="path-title">Mathematics Mastery Path</div>
+                                <div class="view-all">Customize</div>
+                            </div>
+                            <div class="path-steps">
+                                <div class="path-step">
+                                    <div class="step-icon"><i class="fas fa-check"></i></div>
+                                    <div class="step-info">
+                                        <div class="step-title">Algebra Fundamentals</div>
+                                        <div class="step-description">Master basic algebraic concepts and equations</div>
+                                    </div>
+                                    <div class="step-status">Completed</div>
+                                </div>
+                                <div class="path-step">
+                                    <div class="step-icon"><i class="fas fa-check"></i></div>
+                                    <div class="step-info">
+                                        <div class="step-title">Geometry Basics</div>
+                                        <div class="step-description">Understand shapes, angles, and spatial relationships</div>
+                                    </div>
+                                    <div class="step-status">Completed</div>
+                                </div>
+                                <div class="path-step">
+                                    <div class="step-icon">3</div>
+                                    <div class="step-info">
+                                        <div class="step-title">Trigonometry</div>
+                                        <div class="step-description">Learn about triangles and trigonometric functions</div>
+                                    </div>
+                                    <div class="step-status pending">In Progress</div>
+                                </div>
+                                <div class="path-step">
+                                    <div class="step-icon">4</div>
+                                    <div class="step-info">
+                                        <div class="step-title">Calculus Introduction</div>
+                                        <div class="step-description">Explore limits, derivatives, and integrals</div>
+                                    </div>
+                                    <div class="step-status">Not Started</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    setupEventListeners();
+                    break;
+                    
+                default:
+                    // Default to home
+                    navigateToPage('home');
+            }
+        }
+
+        // Render community cards
+        function renderCommunityCards() {
+            const communityContainer = document.getElementById('community-cards');
+            communityContainer.innerHTML = '';
+            
+            sampleTeachers.forEach(teacher => {
+                const card = document.createElement('div');
+                card.className = 'community-card';
+                card.innerHTML = `
+                    <div class="community-avatar" style="background: linear-gradient(135deg, ${getSubjectColor(teacher.subject)}, ${getSubjectSecondaryColor(teacher.subject)})">${teacher.avatar}</div>
+                    <div class="community-name">${teacher.name}</div>
+                    <div class="community-subject">${teacher.subject}</div>
+                    <div class="community-stats">
+                        <span>${teacher.followers} followers</span>
+                        <span>${teacher.courses} courses</span>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 12px; width: 100%; padding: 8px;">
+                        <i class="fas fa-user-plus"></i> Follow
+                    </button>
+                `;
+                communityContainer.appendChild(card);
+            });
+        }
+
+        // Render search results
+        function renderSearchResults(query) {
+            // Filter teachers
+            const teacherResults = document.getElementById('teacher-results');
+            teacherResults.innerHTML = '';
+            
+            const filteredTeachers = sampleTeachers.filter(teacher => 
+                teacher.name.toLowerCase().includes(query) || 
+                teacher.subject.toLowerCase().includes(query)
+            );
+            
+            filteredTeachers.forEach(teacher => {
+                const card = document.createElement('div');
+                card.className = 'result-card';
+                card.innerHTML = `
+                    <div class="result-avatar" style="background: linear-gradient(135deg, ${getSubjectColor(teacher.subject)}, ${getSubjectSecondaryColor(teacher.subject)})">${teacher.avatar}</div>
+                    <div class="result-name">${teacher.name}</div>
+                    <div class="result-subject">${teacher.subject}</div>
+                `;
+                teacherResults.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>

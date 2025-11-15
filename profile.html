@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduConnect - Profile Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --secondary-color: #34a853;
+            --accent-color: #ea4335;
+            --background-color: #f8f9fa;
+            --card-color: #ffffff;
+            --text-color: #202124;
+            --light-text: #5f6368;
+            --border-color: #dadce0;
+            --teacher-color: #4285f4;
+            --student-color: #fbbc05;
+            --sidebar-width: 240px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--card-color);
+            border-right: 1px solid var(--border-color);
+            padding: 16px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 24px 16px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background-color: var(--primary-color);
+            border-radius: 8px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-item.active {
+            background-color: rgba(66, 133, 244, 0.1);
+            border-right: 3px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .nav-icon {
+            margin-right: 16px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-text);
+        }
+
+        .nav-item.active .nav-icon {
+            color: var(--primary-color);
+        }
+
+        .nav-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 24px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--card-color);
+            border-radius: 24px;
+            padding: 8px 16px;
+            width: 500px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .search-input {
+            border: none;
+            outline: none;
+            flex: 1;
+            padding: 8px;
+            font-size: 16px;
+            background: transparent;
+        }
+
+        .search-icon {
+            color: var(--light-text);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Profile Container */
+        .profile-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: var(--teacher-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+            margin-right: 24px;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .profile-subject {
+            font-size: 16px;
+            color: var(--light-text);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-subject i {
+            margin-right: 6px;
+        }
+
+        .profile-bio {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+            color: var(--light-text);
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 24px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--light-text);
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #3367d6;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Profile Tabs */
+        .profile-tabs {
+            display: flex;
+            background-color: var(--card-color);
+            border-radius: 12px 12px 0 0;
+            overflow: hidden;
+            margin-bottom: 0;
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+        }
+
+        .tab {
+            padding: 16px 24px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .tab i {
+            margin-right: 8px;
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .tab:hover:not(.active) {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            background-color: var(--card-color);
+            border-radius: 0 0 12px 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            border-top: none;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* Thoughts Grid */
+        .thoughts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .thought-card {
+            background-color: var(--background-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid var(--border-color);
+        }
+
+        .thought-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .thought-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--teacher-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-subject {
+            font-size: 12px;
+            color: var(--light-text);
+        }
+
+        .thought-time {
+            font-size: 12px;
+            color: var(--light-text);
+        }
+
+        .thought-content {
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .thought-actions {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--border-color);
+            padding-top: 12px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            background: none;
+            border: none;
+            color: var(--light-text);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+            font-size: 14px;
+        }
+
+        .action-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .action-icon {
+            margin-right: 6px;
+            font-size: 16px;
+        }
+
+        /* Courses Grid */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .course-card {
+            background-color: var(--background-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .course-image {
+            height: 160px;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .course-info {
+            padding: 16px;
+        }
+
+        .course-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .course-description {
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: var(--light-text);
+        }
+
+        .course-price {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+        }
+
+        .course-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Live Sessions */
+        .live-sessions {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .live-card {
+            background-color: var(--background-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .live-badge {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            position: absolute;
+            top: 8px;
+            left: 8px;
+        }
+
+        .live-preview {
+            height: 160px;
+            background-color: #e0e0e0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .live-info {
+            padding: 12px;
+        }
+
+        .live-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .live-teacher {
+            font-size: 14px;
+            color: var(--light-text);
+        }
+
+        /* Settings Form */
+        .settings-form {
+            max-width: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: white;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .thoughts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 72px;
+            }
+
+            .sidebar .nav-text {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 72px;
+            }
+
+            .search-bar {
+                width: 70%;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-avatar {
+                margin-right: 0;
+                margin-bottom: 16px;
+            }
+
+            .profile-stats {
+                justify-content: center;
+            }
+
+            .profile-actions {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 16px;
+            }
+
+            .search-bar {
+                width: 100%;
+            }
+
+            .profile-tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+                <div class="logo-text">EduConnect</div>
+            </div>
+            <a href="index2.html" class="nav-item">
+                <div class="nav-icon"><i class="fas fa-home"></i></div>
+                <div class="nav-text">Home</div>
+            </a>
+            <a href="search.html" class="nav-item">
+                <div class="nav-icon"><i class="fas fa-search"></i></div>
+                <div class="nav-text">Search</div>
+            </a>
+            <a href="courses.html" class="nav-item">
+                <div class="nav-icon"><i class="fas fa-book-open"></i></div>
+                <div class="nav-text">Courses</div>
+            </a>
+            <a href="live.html" class="nav-item">
+                <div class="nav-icon"><i class="fas fa-broadcast-tower"></i></div>
+                <div class="nav-text">Live Classes</div>
+            </a>
+            <a href="saved.html" class="nav-item">
+                <div class="nav-icon"><i class="fas fa-bookmark"></i></div>
+                <div class="nav-text">Saved Thoughts</div>
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <div class="nav-icon"><i class="fas fa-user"></i></div>
+                <div class="nav-text">Profile</div>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="page-title">Profile</div>
+                <div class="header-actions">
+                    <div class="search-bar">
+                        <input type="text" class="search-input" placeholder="Search teachers, courses, thoughts...">
+                        <div class="search-icon"><i class="fas fa-search"></i></div>
+                    </div>
+                    <div class="user-avatar">RS</div>
+                </div>
+            </div>
+
+            <!-- Profile Section -->
+            <div class="profile-container">
+                <!-- Profile Header -->
+                <div class="profile-header">
+                    <div class="profile-avatar">RS</div>
+                    <div class="profile-info">
+                        <div class="profile-name">Dr. Rajesh Sharma</div>
+                        <div class="profile-subject">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            Mathematics Teacher • IIT JEE Expert
+                        </div>
+                        <div class="profile-bio">
+                            Passionate mathematics educator with 12+ years of experience. Specialized in Calculus, Algebra, and IIT-JEE preparation. 
+                            My goal is to make complex mathematical concepts simple and enjoyable for students.
+                        </div>
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">1.2K</div>
+                                <div class="stat-label">Followers</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">24</div>
+                                <div class="stat-label">Courses</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">356</div>
+                                <div class="stat-label">Thoughts</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">4.9</div>
+                                <div class="stat-label">Rating</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-actions">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-edit"></i>
+                            Edit Profile
+                        </button>
+                        <button class="btn btn-outline">
+                            <i class="fas fa-share-alt"></i>
+                            Share Profile
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Profile Tabs -->
+                <div class="profile-tabs">
+                    <div class="tab active" data-tab="thoughts">
+                        <i class="fas fa-lightbulb"></i>
+                        My Thoughts
+                    </div>
+                    <div class="tab" data-tab="courses">
+                        <i class="fas fa-book-open"></i>
+                        My Courses
+                    </div>
+                    <div class="tab" data-tab="live">
+                        <i class="fas fa-broadcast-tower"></i>
+                        Live Sessions
+                    </div>
+                    <div class="tab" data-tab="settings">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </div>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- Thoughts Tab -->
+                    <div class="tab-pane active" id="thoughts-tab">
+                        <div class="thoughts-grid">
+                            <!-- Thought cards will be dynamically generated here -->
+                        </div>
+                    </div>
+
+                    <!-- Courses Tab -->
+                    <div class="tab-pane" id="courses-tab">
+                        <div class="courses-grid">
+                            <!-- Course cards will be dynamically generated here -->
+                        </div>
+                    </div>
+
+                    <!-- Live Sessions Tab -->
+                    <div class="tab-pane" id="live-tab">
+                        <div class="live-sessions">
+                            <!-- Live session cards will be dynamically generated here -->
+                        </div>
+                    </div>
+
+                    <!-- Settings Tab -->
+                    <div class="tab-pane" id="settings-tab">
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label class="form-label">Display Name</label>
+                                <input type="text" class="form-input" value="Dr. Rajesh Sharma">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-input" value="rajesh.sharma@educonnect.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Subject</label>
+                                <select class="form-select">
+                                    <option value="maths" selected>Mathematics</option>
+                                    <option value="physics">Physics</option>
+                                    <option value="chemistry">Chemistry</option>
+                                    <option value="biology">Biology</option>
+                                    <option value="english">English</option>
+                                    <option value="coding">Coding</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Bio</label>
+                                <textarea class="form-textarea">Passionate mathematics educator with 12+ years of experience. Specialized in Calculus, Algebra, and IIT-JEE preparation. My goal is to make complex mathematical concepts simple and enjoyable for students.</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Account Type</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div style="padding: 8px 16px; background-color: rgba(66, 133, 244, 0.1); border-radius: 8px; color: var(--primary-color);">
+                                        Teacher Account
+                                    </div>
+                                    <button class="btn btn-outline" style="font-size: 12px;">Switch to Student</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for the profile
+        const profileThoughts = [
+            {
+                id: 1,
+                content: "Calculus is not just about formulas. It's about understanding change and motion in the universe. The derivative represents instantaneous rate of change - think of it as capturing a moment in time.",
+                time: "2 hours ago",
+                likes: 24,
+                comments: 8,
+                shares: 3
+            },
+            {
+                id: 2,
+                content: "When solving integration problems, always remember: Integration is the reverse process of differentiation. If you understand derivatives well, integration becomes much easier.",
+                time: "1 day ago",
+                likes: 18,
+                comments: 5,
+                shares: 2
+            },
+            {
+                id: 3,
+                content: "For IIT-JEE aspirants: Focus on understanding concepts rather than memorizing formulas. The exam tests your application skills, not just memory.",
+                time: "3 days ago",
+                likes: 42,
+                comments: 12,
+                shares: 7
+            },
+            {
+                id: 4,
+                content: "Mathematics is the language of the universe. Every equation tells a story about how things work in nature. Embrace the beauty of patterns and relationships.",
+                time: "1 week ago",
+                likes: 56,
+                comments: 15,
+                shares: 9
+            }
+        ];
+
+        const profileCourses = [
+            {
+                id: 1,
+                title: "Advanced Calculus for IIT-JEE",
+                description: "Master differential equations, integrals, and advanced calculus concepts with problem-solving techniques for competitive exams.",
+                price: "₹1,999",
+                students: 245,
+                rating: 4.9
+            },
+            {
+                id: 2,
+                title: "Algebra Fundamentals",
+                description: "Comprehensive guide to algebraic expressions, equations, and functions with practical examples.",
+                price: "₹899",
+                students: 187,
+                rating: 4.7
+            },
+            {
+                id: 3,
+                title: "Trigonometry Masterclass",
+                description: "Learn trigonometric functions, identities, and applications with real-world problem solving.",
+                price: "₹1,299",
+                students: 132,
+                rating: 4.8
+            },
+            {
+                id: 4,
+                title: "IIT-JEE Mathematics Crash Course",
+                description: "Intensive preparation course covering all mathematics topics for IIT-JEE with mock tests.",
+                price: "₹2,499",
+                students: 89,
+                rating: 4.9
+            }
+        ];
+
+        const profileLiveSessions = [
+            {
+                id: 1,
+                title: "Calculus Problem Solving",
+                date: "Today, 4:00 PM",
+                duration: "60 mins",
+                attendees: 124
+            },
+            {
+                id: 2,
+                title: "IIT-JEE Mock Test Discussion",
+                date: "Tomorrow, 3:00 PM",
+                duration: "90 mins",
+                attendees: 89
+            },
+            {
+                id: 3,
+                title: "Algebra Concepts Revision",
+                date: "Friday, 5:00 PM",
+                duration: "45 mins",
+                attendees: 67
+            },
+            {
+                id: 4,
+                title: "Quick Math Tricks",
+                date: "Saturday, 11:00 AM",
+                duration: "30 mins",
+                attendees: 203
+            }
+        ];
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Render profile content
+            renderProfileThoughts();
+            renderProfileCourses();
+            renderProfileLiveSessions();
+            
+            // Set up event listeners
+            setupEventListeners();
+        });
+
+        // Render profile thoughts
+        function renderProfileThoughts() {
+            const thoughtsContainer = document.querySelector('.thoughts-grid');
+            thoughtsContainer.innerHTML = '';
+            
+            profileThoughts.forEach(thought => {
+                const thoughtCard = document.createElement('div');
+                thoughtCard.className = 'thought-card';
+                thoughtCard.innerHTML = `
+                    <div class="thought-header">
+                        <div class="avatar" style="background-color: #4285f4">RS</div>
+                        <div class="user-info">
+                            <div class="user-name">Dr. Rajesh Sharma</div>
+                            <div class="user-subject">Mathematics • IIT JEE Expert</div>
+                        </div>
+                        <div class="thought-time">${thought.time}</div>
+                    </div>
+                    <div class="thought-content">
+                        ${thought.content}
+                    </div>
+                    <div class="thought-actions">
+                        <button class="action-btn">
+                            <span class="action-icon"><i class="fas fa-thumbs-up"></i></span>
+                            <span>${thought.likes}</span>
+                        </button>
+                        <button class="action-btn">
+                            <span class="action-icon"><i class="fas fa-comment"></i></span>
+                            <span>${thought.comments}</span>
+                        </button>
+                        <button class="action-btn">
+                            <span class="action-icon"><i class="fas fa-share"></i></span>
+                            <span>${thought.shares}</span>
+                        </button>
+                        <button class="action-btn">
+                            <span class="action-icon"><i class="fas fa-bookmark"></i></span>
+                            <span>Save</span>
+                        </button>
+                    </div>
+                `;
+                thoughtsContainer.appendChild(thoughtCard);
+            });
+        }
+
+        // Render profile courses
+        function renderProfileCourses() {
+            const coursesContainer = document.querySelector('.courses-grid');
+            coursesContainer.innerHTML = '';
+            
+            profileCourses.forEach(course => {
+                const courseCard = document.createElement('div');
+                courseCard.className = 'course-card';
+                courseCard.innerHTML = `
+                    <div class="course-image">
+                        <div>Mathematics Course</div>
+                    </div>
+                    <div class="course-info">
+                        <div class="course-title">${course.title}</div>
+                        <div class="course-description">${course.description}</div>
+                        <div class="course-price">${course.price} • ${course.students} students • ⭐ ${course.rating}</div>
+                        <div class="course-actions">
+                            <button class="btn btn-primary">Edit Course</button>
+                            <button class="action-btn">
+                                <span class="action-icon"><i class="fas fa-chart-bar"></i></span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                coursesContainer.appendChild(courseCard);
+            });
+        }
+
+        // Render profile live sessions
+        function renderProfileLiveSessions() {
+            const liveContainer = document.querySelector('.live-sessions');
+            liveContainer.innerHTML = '';
+            
+            profileLiveSessions.forEach(session => {
+                const liveCard = document.createElement('div');
+                liveCard.className = 'live-card';
+                liveCard.innerHTML = `
+                    <div class="live-preview">
+                        <div class="live-badge">UPCOMING</div>
+                        <div>Mathematics Session</div>
+                    </div>
+                    <div class="live-info">
+                        <div class="live-title">${session.title}</div>
+                        <div class="live-teacher">${session.date} • ${session.duration} • ${session.attendees} attendees</div>
+                        <div class="course-actions" style="margin-top: 12px;">
+                            <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">Manage</button>
+                            <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px;">Share</button>
+                        </div>
+                    </div>
+                `;
+                liveContainer.appendChild(liveCard);
+            });
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding tab content
+                    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+        }
+    </script>
+</body>
+</html>
